@@ -5,9 +5,11 @@ try:
 	from urllib.error import HTTPError  # NOQA
 	from urllib.request import urlopen  # NOQA
 	from urllib.parse import urlencode as urllib_urlencode  # NOQA
+	from urllib.parse import quote_plus as urllib_quote_plus  # NOQA
 except ImportError:
 	from urllib2 import urlopen, HTTPError  # NOQA
 	from urllib import urlencode as urllib_urlencode  # NOQA
+	from urllib import quote_plus as urllib_quote_plus  # NOQA
 
 
 def urllib_read(url):
