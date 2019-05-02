@@ -105,12 +105,12 @@ class WeatherSegment(KwThreadedSegment):
 
 		temp_format = temp_format or ('{temp:.0f}' + temp_units[unit])
 		converted_temp = temp_conversions[unit](temp)
-		if temp <= temp_coldest:
+		if float(temp) <= float(temp_coldest):
 			gradient_level = 0
-		elif temp >= temp_hottest:
+		elif float(temp) >= float(temp_hottest):
 			gradient_level = 100
 		else:
-			gradient_level = (temp - temp_coldest) * 100.0 / (temp_hottest - temp_coldest)
+			gradient_level = (float(temp) - float(temp_coldest)) * 100.0 / (float(temp_hottest) - float(temp_coldest))
 		groups = ['weather_conditions', 'weather']
 		return [
 			{
