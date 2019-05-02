@@ -26,9 +26,9 @@ weather_conditions_codes = {
 }
 
 temp_conversions = {
-	'C': lambda temp: (temp - 32) * 5/9,
-	'F': lambda temp: temp,
-	'K': lambda temp: (temp + 459.67) * 5/9,
+	'C': lambda temp: temp,
+	'F': lambda temp: (temp * 9 / 5) + 32,
+	'K': lambda temp: temp + 273.15,
 }
 
 # Note: there are also unicode characters for units: ℃, ℉ and  K
@@ -52,6 +52,8 @@ class WeatherSegment(KwThreadedSegment):
 			return self.location_urls[location_query]
 		except KeyError:
 			if location_query is None:
+				# Note: nekudo's api has also changed and is useless but wttr.in can use your ip address
+				#TODO: change this to not use nekudo and use ip address of request to wwtr.in instead
 				location_data = json.loads(urllib_read('http://geoip.nekudo.com/api/'))
 				location = ','.join((
 					location_data['city'],
@@ -60,9 +62,12 @@ class WeatherSegment(KwThreadedSegment):
 				))
 				self.info('Location returned by nekudo is {0}', location)
 			else:
+				# Note: wttr.in will use your ip address if needed
+				# Note: Also if specifiying location ONLY use city name
+				# Note: (no idea how to get around cities with same name in different countires)
 				location = location_query
 			self.location_urls[location_query] = url = (
-				'https://wttr.in/{0}?format={1}').format(urllib_quote_plus(location), urllib_quote_plus('%c|%t'))
+				'https://wttr.in/{0}?m&format={1}').format(urllib_quote_plus(location), urllib_quote_plus('%c+%t'))
 			print(url)
 			return url
 
@@ -76,7 +81,7 @@ class WeatherSegment(KwThreadedSegment):
 		split_response = raw_response.split('|')
 		response = {
 			'condition': split_response[0],
-			'temp': split_response[1].rstrip('°F\n')[1:],
+			'temp': split_response[1].rstrip('°C\n')[1:],
 			'temp_multiplier': 1 if split_response[1].startswith('+') else -1
 		}
 		
