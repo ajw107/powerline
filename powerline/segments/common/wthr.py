@@ -67,7 +67,7 @@ class WeatherSegment(KwThreadedSegment):
 				# Note: (no idea how to get around cities with same name in different countires)
 				location = location_query
 			self.location_urls[location_query] = url = (
-				'https://wttr.in/{0}?m&format={1}').format(urllib_quote_plus(location), urllib_quote_plus('%c+%t'))
+				'https://wttr.in/{0}?m&format={1}').format(urllib_quote_plus(location), urllib_quote_plus('%c|%t'))
 			print(url)
 			return url
 
